@@ -41,11 +41,11 @@ function ConfigureBranchProtection {
 function DummyCommit {
     $bodyDummyCommit = "{
     `n  `"branch`": `"main`",
-    `n  `"message`": `"Dummy file to create the initial branch. Please remove and update with a Readme file`",
-    `n  `"content`": `"ZHVtbXk=`"
+    `n  `"message`": `"Init file to create the initial branch. Please remove and update with a Readme file`",
+    `n  `"content`": `"SW5pdGZpbGU=`"
     `n}"
 
-    $response = Invoke-RestMethod "https://api.github.com/repos/InterceptBV/$ghRepoName/contents/dummy" -Method 'PUT' -Headers $headers -Body $bodyDummyCommit
+    $response = Invoke-RestMethod "https://api.github.com/repos/InterceptBV/$ghRepoName/contents/initfile" -Method 'PUT' -Headers $headers -Body $bodyDummyCommit
     $response | ConvertTo-Json
 }
 
