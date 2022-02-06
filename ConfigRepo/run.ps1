@@ -6,6 +6,7 @@ param($Request, $TriggerMetadata)
 # Write to the Azure Functions log stream.
 Write-Host "PowerShell HTTP trigger function processed a request."
 
+$orgName="automagicallyorg"
 $Request = $Request.Body
 $action  = $Request.action
 Write-Host "Action Type:" $Request.action
@@ -15,7 +16,7 @@ Write-Host "Private Repository:" $Request.repository.private
 # Header for GitHub API
 $ghToken = $env:ghToken
 $headers = New-Object "System.Collections.Generic.Dictionary[[String],[String]]"
-$headers.Add("Accept", "application/vnd.github.luke-cage-preview+json")
+$headers.Add("Accept", "application/vnd.github.v3+json")
 $headers.Add("Authorization", "Basic $ghToken")
 $headers.Add("Content-Type", "application/json")
 
@@ -34,7 +35,7 @@ function ConfigureBranchProtection {
     `n    `"restrictions`": null
     `n}"
     
-    $response = Invoke-RestMethod "https://api.github.com/repos/InterceptBV/$ghRepoName/branches/main/protection" -Method 'PUT' -Headers $headers -Body $bodyConfigureProtection
+    $response = Invoke-RestMethod "https://api.github.com/repos/$orgName/$ghRepoName/branches/main/protection" -Method 'PUT' -Headers $headers -Body $bodyConfigureProtection
     $response | ConvertTo-Json
 }
     
@@ -45,7 +46,7 @@ function DummyCommit {
     `n  `"content`": `"SW5pdGZpbGU=`"
     `n}"
 
-    $response = Invoke-RestMethod "https://api.github.com/repos/InterceptBV/$ghRepoName/contents/initfile" -Method 'PUT' -Headers $headers -Body $bodyDummyCommit
+    $response = Invoke-RestMethod "https://api.github.com/repos/$orgName/$ghRepoName/contents/initfile" -Method 'PUT' -Headers $headers -Body $bodyDummyCommit
     $response | ConvertTo-Json
 }
 

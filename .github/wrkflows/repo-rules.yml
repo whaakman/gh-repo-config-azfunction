@@ -1,0 +1,36 @@
+name: Deploy Repo Rules
+ 
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+ 
+  workflow_dispatch:
+ 
+env:
+  FUNCTION_NAME: github-repo-rules
+  SCRIPT_PATH: '.'
+  RESOURCE_GROUP: github-repo-rules
+  LOCATION: 'eastus'
+ 
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+     steps:
+      - uses: actions/checkout@v2
+
+      - name: Log in with Azure
+        uses: azure/login@v1
+        with:
+          creds: '${{ secrets.AZURE_CREDENTIALS }}'
+          enable-AzPSSession: true
+      - name: Azure PowerShell Action
+        uses: Azure/powershell@v1
+        with:
+          # Specify the Az PowerShell script here.
+          # Specify the Az PowerShell script here.
+          inlineScript: 
+            .\deployFA.ps1 -FunctionName ${{ env.FUNCTION_NAME }} -FunctionResourceGroup ${{ env.RESOURCE_GROUP }} -Location ${{ env.LOCATION }}
+          # Azure PS version to be used to execute the script, example: 1.8.0, 2.8.0, 3.4.0. To use the latest version, specify "latest".
+          azPSVersion: latest
