@@ -28,8 +28,9 @@ function ConfigureBranchProtection {
     `n    `"enforce_admins`": true,
     `n    `"required_pull_request_reviews`": {
     `n        `"dismissal_restrictions`": {},
-    `n        `"dismiss_stale_reviews`": false,
+    `n        `"dismiss_stale_reviews`": true,
     `n        `"require_code_owner_reviews`": false,
+    `n        `"required_conversation_resolution`": true,
     `n        `"required_approving_review_count`": 1
     `n    },
     `n    `"restrictions`": null
@@ -54,7 +55,7 @@ if ($action -eq "created")
 {
     try {
         Write-Host Configuring branch protection
-    ConfigureBranchProtection
+        ConfigureBranchProtection
     }
     catch {
         Write-Host No branches exist, creating dummy commit to initialize branch.
