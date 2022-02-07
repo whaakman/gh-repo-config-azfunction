@@ -1,0 +1,44 @@
+name: Deploy Repo Rules
+ 
+on:
+  push:
+    branches: [ main ]
+ 
+  workflow_dispatch:
+ 
+env:
+  FUNCTION_NAME: github-repo-rules
+  SCRIPT_PATH: '.'
+  RESOURCE_GROUP: github-repo-rules
+  LOCATION: 'eastus'
+ 
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Log in with Azure
+      uses: azure/login@v1
+      with:
+        creds: '${{ secrets.AZURE_CREDENTIALS }}'
+        enable-AzPSSession: true
+
+    - name: 'Fetching Azure Functions Publishing Profile'
+      id: publishprofile
+      uses: azure/powershell@v1
+      with:
+        inlineScript: |
+            $profile = ""
+            $profile = Get-AzWebAppPublishingProfile -ResourceGroupName $env:RESOURCE_GROUP -Name $env:FUNCTION_NAME
+            $profile = $profile.Replace("`r", "").Replace("`n", "")
+            Write-Output "::set-output name=pubprofile::$profile"
+            Remove-Variable profile
+        azPSVersion: "latest"
+
+    - name: Azure Functions Action
+      uses: Azure/functions-action@v1.1.8
+      with:
+        app-name: ${{ env.FUNCTION_NAME }}
+        package: ${{ env.SCRIPT_PATH }}
+        publish-profile: ${{ steps.publishprofile.outputs.pubprofile }}
