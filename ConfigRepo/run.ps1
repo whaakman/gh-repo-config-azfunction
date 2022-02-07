@@ -26,11 +26,11 @@ function ConfigureBranchProtection {
     $bodyConfigureProtection = "{
     `n    `"required_status_checks`": null,
     `n    `"enforce_admins`": true,
+    `n    `"required_conversation_resolution`": true,
     `n    `"required_pull_request_reviews`": {
     `n        `"dismissal_restrictions`": {},
     `n        `"dismiss_stale_reviews`": true,
     `n        `"require_code_owner_reviews`": false,
-    `n        `"required_linear_history`": true,
     `n        `"required_approving_review_count`": 1
     `n    },
     `n    `"restrictions`": null
