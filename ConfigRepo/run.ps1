@@ -41,14 +41,14 @@ function ConfigureBranchProtection {
     $response | ConvertTo-Json
 }
     
-function DummyCommit {
-    $bodyDummyCommit = "{
+function AddReadMe {
+    $bodyReadMe = "{
     `n  `"branch`": `"main`",
-    `n  `"message`": `"Init file to create the initial branch. Please remove and update with a Readme file`",
-    `n  `"content`": `"SW5pdGZpbGU=`"
+    `n  `"message`": `"add README`",
+    `n  `"content`": `"QWRkIHNvbWUgbWVhbmluZ2Z1bCBkZXNjcmlwdGlvbiBwbGVhc2UuIEl0IHdpbGwgaGVscCB5b3UgbGF0ZXIu`"
     `n}"
 
-    $response = Invoke-RestMethod "https://api.github.com/repos/$orgName/$ghRepoName/contents/initfile" -Method 'PUT' -Headers $headers -Body $bodyDummyCommit
+    $response = Invoke-RestMethod "https://api.github.com/repos/$orgName/$ghRepoName/contents/README.md" -Method 'PUT' -Headers $headers -Body $bodyReadMe
     $response | ConvertTo-Json
 }
 
@@ -59,8 +59,8 @@ if ($action -eq "created")
         ConfigureBranchProtection
     }
     catch {
-        Write-Host No branches exist, creating dummy commit to initialize branch.
-        DummyCommit
+        Write-Host No branches exist, creating init commit to initialize branch.
+        AddReadMe
         ConfigureBranchProtection
     }
     finally {
