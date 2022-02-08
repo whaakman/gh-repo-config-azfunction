@@ -74,7 +74,7 @@ if ($action -eq "created")
 }
 
 # enforce branch protection rules when updated manually
-if( ($action -eq "edited") -and ($branch -eq $protectedBranch) )
+if(  ( ($action -eq "edited") -or ($action -eq "deleted") ) -and ($branch -eq $protectedBranch) )
 {
     try {
         Write-Host "Enforcing branch protection"
