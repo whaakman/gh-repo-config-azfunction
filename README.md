@@ -12,11 +12,13 @@ The goal of of this webhook is to enforce branch protection rule standards acros
 
 
 ## How it works
-We have enabled GitHub webhook to listed to repository events in our GitHub organization. Webhook is pointing to Azure PowerShell function called github-repo-rules. Source code for Azure PowerShell function can be found [here](https://github.com/automagicallyorg/gh-repo-config-azfunction.) 
+We have enabled GitHub webhook to listed to repository events in our GitHub organization. Webhook is pointing to Azure PowerShell function called github-repo-rules. Source code for Azure PowerShell function can be found [here](https://github.com/automagicallyorg/gh-repo-config-azfunction.) This repo was forked from [whaakman/gh-repo-config-azfunction](https://github.com/whaakman/gh-repo-config-azfunction)
 
 Azure PowerShell function will configure branch protection rules when triggered with new repo creation. If repo was created without any files committed then Azure PowerShell function will commit an initial README.md file with some basic instructions into the repo and then apply the branch protection rule to the main branch.
 
 Azure PowerShell function uses GitHub REST API to manage branch protection rules in GitHub. More information can be found at [GitHub REST API](https://docs.github.com/en/enterprise-cloud@latest/rest/reference/branches#update-branch-protection).
 
 ## Azure infrastructure
-Azure PowerShell function is using ghToken variable that is pointing to a ghToken secret storing GitHub BASE64 encoded PAT token in maxghkv Azure KeyVault. This GitHub PAT has repo scope defined and is set to expire on on Mon, Mar 7 2022.
+Azure PowerShell function is using ghToken variable that is pointing to a ghToken secret storing GitHub BASE64 encoded PAT token in maxghkv Azure KeyVault. This GitHub PAT has repo scope defined and is set to **expire on on Mon, Mar 7 2022**.
+
+Azure PowerShell function is using managed identity to access Azure KeyVault. github-repo-rules Azure PowerShell function has get/list permissions to maxghkv Azure KeyVault.
