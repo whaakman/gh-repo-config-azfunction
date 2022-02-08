@@ -12,6 +12,8 @@ $action  = $Request.action
 Write-Host "Action Type:" $Request.action
 Write-Host "Repository Name:" $Request.repository.name
 Write-Host "Private Repository:" $Request.repository.private
+Write-Host "Rule id:" $Request.rule.id
+Write-Host "Protected branch name:" $Request.rule.name
 
 # Header for GitHub API
 $ghToken = $env:ghToken
