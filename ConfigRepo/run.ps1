@@ -6,9 +6,11 @@ param($Request, $TriggerMetadata)
 # Write to the Azure Functions log stream.
 Write-Host "PowerShell HTTP trigger function processed a request."
 
-$orgName="automagicallyorg"
+$orgName = "automagicallyorg"
+$protectedBranch = "main"
 $Request = $Request.Body
 $action  = $Request.action
+$branch  = $Request.rule.name
 Write-Host "Action Type:" $Request.action
 Write-Host "Repository Name:" $Request.repository.name
 Write-Host "Private Repository:" $Request.repository.private
@@ -39,7 +41,7 @@ function ConfigureBranchProtection {
     `n    `"restrictions`": null
     `n}"
     
-    $response = Invoke-RestMethod "https://api.github.com/repos/$orgName/$ghRepoName/branches/main/protection" -Method 'PUT' -Headers $headers -Body $bodyConfigureProtection
+    $response = Invoke-RestMethod "https://api.github.com/repos/$orgName/$ghRepoName/branches/$protectedBranch/protection" -Method 'PUT' -Headers $headers -Body $bodyConfigureProtection
     $response | ConvertTo-Json
 }
     
@@ -54,19 +56,32 @@ function AddReadMe {
     $response | ConvertTo-Json
 }
 
+# configure branch protection rules when repo created
 if ($action -eq "created")
 {
     try {
-        Write-Host Configuring branch protection
+        Write-Host "Configuring branch protection"
         ConfigureBranchProtection
     }
     catch {
-        Write-Host No branches exist, creating init commit to initialize branch.
+        Write-Host "No branches exist, creating init commit to initialize branch."
         AddReadMe
         ConfigureBranchProtection
     }
     finally {
-        Write-Host Branch protection configured
+        Write-Host "Branch protection configured"
+    }
+}
+
+# enforce branch protection rules when updated manually
+if( ($action -eq "edited") -and ($branch -eq $protectedBranch) )
+{
+    try {
+        Write-Host "Enforcing branch protection"
+        ConfigureBranchProtection
+    }
+    catch {
+        Write-Host "Check if main branch exists"
     }
 }
 
