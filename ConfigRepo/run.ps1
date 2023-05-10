@@ -28,17 +28,18 @@ $ghRepoName = $Request.repository.name
 
 function ConfigureBranchProtection {
     $bodyConfigureProtection = "{
-    `n    `"required_status_checks`": null,
+    `n    `"required_status_checks`": {},
     `n    `"enforce_admins`": true,
     `n    `"required_conversation_resolution`": true,
     `n    `"required_linear_history`": true,
     `n    `"required_pull_request_reviews`": {
     `n        `"dismissal_restrictions`": {},
     `n        `"dismiss_stale_reviews`": true,
-    `n        `"require_code_owner_reviews`": false,
+    `n        `"require_code_owner_reviews`": true,
+    `n        `"require_last_push_approval`": true,
     `n        `"required_approving_review_count`": 1
     `n    },
-    `n    `"restrictions`": null
+    `n    `"restrictions`": {}
     `n}"
     
     $response = Invoke-RestMethod "https://api.github.com/repos/$orgName/$ghRepoName/branches/$protectedBranch/protection" -Method 'PUT' -Headers $headers -Body $bodyConfigureProtection
